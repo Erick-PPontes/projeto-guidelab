@@ -1,0 +1,7 @@
+# Pastas pesadas do Node
+node_modules/
+frontend/node_modules/
+
+# Arquivos sensíveis e banco local
+.env
+database.sqlite
