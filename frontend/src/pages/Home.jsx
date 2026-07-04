@@ -10,13 +10,23 @@ function Home() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    api.get('/categorias').then(res => setCategorias(res.data))
+    
+    api.get('/categorias')
+      .then(res => setCategorias(res.data))
+      .catch(err => console.error("Erro ao carregar categorias:", err))
   }, [])
 
   const toggleCategoria = (id) => {
     setSelecionadas(prev =>
       prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
     )
+  }
+
+  const handleKeyDown = (e, id) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      toggleCategoria(id)
+    }
   }
 
   const buscar = () => {
@@ -30,169 +40,288 @@ function Home() {
   }
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.titulo}>Descubra quais exames fazer</h1>
-      <p style={styles.subtitulo}>
-        Selecione as categorias de interesse e receba sugestões personalizadas
-      </p>
+    <div>
+      {/* Hero */}
+      <div style={styles.hero}>
+        <div style={styles.heroContent}>
+          <span style={styles.heroBadge}>Guia de Exames Laboratoriais</span>
+          <h1 style={styles.heroTitulo}>
+            Descubra quais exames<br />você deve fazer
+          </h1>
+          <p style={styles.heroSub}>
+            Selecione as categorias de interesse e receba sugestões
+            personalizadas para levar ao laboratório da sua preferência.
+          </p>
 
-      {/* Perfil opcional */}
-      <div style={styles.perfil}>
-        <div style={styles.campo}>
-          <label style={styles.label}>Sexo (opcional)</label>
-          <select
-            value={sexo}
-            onChange={e => setSexo(e.target.value)}
-            style={styles.select}
-          >
-            <option value="">Prefiro não informar</option>
-            <option value="M">Masculino</option>
-            <option value="F">Feminino</option>
-          </select>
-        </div>
-
-        <div style={styles.campo}>
-          <label style={styles.label}>Idade (opcional)</label>
-          <input
-            type="number"
-            placeholder="Ex: 30"
-            value={idade}
-            onChange={e => setIdade(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-      </div>
-
-      {/* Categorias */}
-      <h2 style={styles.secao}>Escolha as categorias:</h2>
-      <div style={styles.grid}>
-        {categorias.map(cat => (
-          <div
-            key={cat.id}
-            onClick={() => toggleCategoria(cat.id)}
-            style={{
-              ...styles.card,
-              ...(selecionadas.includes(cat.id) ? styles.cardSelecionado : {})
-            }}
-          >
-            <span style={styles.icone}>{cat.icone}</span>
-            <strong style={styles.nomeCategoria}>{cat.nome}</strong>
-            <p style={styles.descCategoria}>{cat.descricao}</p>
+          <div style={styles.perfilRow}>
+            <div style={styles.campo}>
+              <label style={styles.labelBranca}>Sexo</label>
+              <select
+                value={sexo}
+                onChange={e => setSexo(e.target.value)}
+                style={styles.selectHero}
+              >
+                <option value="" style={{ backgroundColor: '#fff', color: '#111827' }}>
+                  Não informar
+                </option>
+                <option value="M" style={{ backgroundColor: '#fff', color: '#111827' }}>
+                  Masculino
+                </option>
+                <option value="F" style={{ backgroundColor: '#fff', color: '#111827' }}>
+                  Feminino
+                </option>
+              </select>
+            </div>
+            <div style={styles.campo}>
+              <label style={styles.labelBranca}>Idade</label>
+              <input
+                type="number"
+                placeholder="Ex: 35"
+                value={idade}
+                onChange={e => setIdade(e.target.value)}
+                onKeyDown={e => (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') && e.preventDefault()} // Impede caracteres inválidos em idades
+                style={{ ...styles.selectHero, width: '110px' }}
+                min="1"
+                max="120"
+              />
+            </div>
           </div>
-        ))}
+        </div>
       </div>
 
-      <button
-        onClick={buscar}
-        style={styles.botao}
-        disabled={selecionadas.length === 0}
-      >
-        Ver exames recomendados →
-      </button>
+      {/*Conteudo*/}
+      <div style={styles.container}>
+
+        <div style={styles.secaoHeader}>
+          <div>
+            <h2 style={styles.secaoTitulo}>Escolha as categorias</h2>
+            <p style={styles.secaoSub}>
+              Clique nas categorias que deseja verificar
+            </p>
+          </div>
+          {selecionadas.length > 0 && (
+            <span style={styles.contadorBadge}>
+              {selecionadas.length} selecionada{selecionadas.length > 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
+
+        <div style={styles.grid}>
+          {categorias.map(cat => {
+            const sel = selecionadas.includes(cat.id)
+            return (
+              <div
+                key={cat.id}
+                onClick={() => toggleCategoria(cat.id)}
+                onKeyDown={(e) => handleKeyDown(e, cat.id)}
+                tabIndex={0} 
+                role="button" 
+                aria-pressed={sel}
+                style={{ ...styles.card, ...(sel ? styles.cardSel : {}) }}
+              >
+                {sel && <div style={styles.check}>✓</div>}
+                <span style={styles.icone}>{cat.icone}</span>
+                <strong style={styles.nomeCategoria}>{cat.nome}</strong>
+                <p style={styles.descCategoria}>{cat.descricao}</p>
+              </div>
+            )
+          })}
+        </div>
+
+        <button
+          onClick={buscar}
+          disabled={selecionadas.length === 0}
+          style={{
+            ...styles.botao,
+            ...(selecionadas.length === 0 ? styles.botaoOff : {})
+          }}
+        >
+          Ver exames recomendados →
+        </button>
+
+        <p style={styles.aviso}>
+          Este site é um guia informativo e não substitui a orientação médica.
+        </p>
+
+      </div>
     </div>
   )
 }
 
 const styles = {
-  container: {
-    maxWidth: '900px',
-    margin: '0 auto',
-    padding: '40px 20px',
-    fontFamily: 'sans-serif',
-  },
-  titulo: {
-    fontSize: '32px',
-    color: '#1a73e8',
-    marginBottom: '8px',
-    textAlign: 'center',
-  },
-  subtitulo: {
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: '32px',
-    fontSize: '16px',
-  },
-  perfil: {
+  hero: {
+    background: 'linear-gradient(135deg, #1AB5BB 0%, #0D8A8F 100%)',
+    padding: '72px 48px',
     display: 'flex',
-    gap: '24px',
-    marginBottom: '32px',
     justifyContent: 'center',
+  },
+  heroContent: {
+    maxWidth: '680px',
+    width: '100%',
+  },
+  heroBadge: {
+    display: 'inline-block',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: '#fff',
+    padding: '5px 16px',
+    borderRadius: '20px',
+    fontSize: '13px',
+    fontWeight: '600',
+    marginBottom: '20px',
+    letterSpacing: '0.4px',
+  },
+  heroTitulo: {
+    color: '#FFFFFF',
+    fontSize: '40px',
+    fontWeight: '700',
+    marginBottom: '16px',
+    lineHeight: '1.2',
+    fontFamily: "'Sora', sans-serif",
+  },
+  heroSub: {
+    color: 'rgba(255,255,255,0.85)',
+    fontSize: '17px',
+    marginBottom: '32px',
+    lineHeight: '1.6',
+  },
+  perfilRow: {
+    display: 'flex',
+    gap: '16px',
+    flexWrap: 'wrap',
   },
   campo: {
     display: 'flex',
     flexDirection: 'column',
     gap: '6px',
   },
-  label: {
+  labelBranca: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: '13px',
+    fontWeight: '600',
+  },
+  selectHero: {
+    padding: '10px 14px',
+    borderRadius: '8px',
+    border: '1.5px solid rgba(255,255,255,0.3)',
     fontSize: '14px',
-    color: '#444',
-    fontWeight: 'bold',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    color: '#fff',
+    outline: 'none',
+    minWidth: '160px',
+    boxSizing: 'border-box'
   },
-  select: {
-    padding: '10px',
-    borderRadius: '8px',
-    border: '1px solid #ccc',
-    fontSize: '15px',
-    minWidth: '180px',
+  container: {
+    maxWidth: '900px',
+    margin: '0 auto',
+    padding: '48px 20px 64px',
   },
-  input: {
-    padding: '10px',
-    borderRadius: '8px',
-    border: '1px solid #ccc',
-    fontSize: '15px',
-    width: '100px',
+  secaoHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: '24px',
   },
-  secao: {
-    color: '#333',
-    marginBottom: '16px',
-    fontSize: '20px',
+  secaoTitulo: {
+    fontSize: '22px',
+    color: '#2C3060',
+    fontFamily: "'Sora', sans-serif",
+  },
+  secaoSub: {
+    color: '#6B7280',
+    fontSize: '14px',
+    marginTop: '4px',
+  },
+  contadorBadge: {
+    backgroundColor: '#C41E2C',
+    color: '#fff',
+    fontSize: '13px',
+    fontWeight: '700',
+    padding: '5px 14px',
+    borderRadius: '20px',
+    whiteSpace: 'nowrap',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(165px, 1fr))',
     gap: '16px',
     marginBottom: '32px',
   },
   card: {
-    padding: '20px',
-    borderRadius: '12px',
-    border: '2px solid #e0e0e0',
+    position: 'relative',
+    padding: '24px 16px',
+    borderRadius: '14px',
+    border: '2px solid #E5E7EB',
     cursor: 'pointer',
     textAlign: 'center',
-    transition: 'all 0.2s',
     backgroundColor: '#fff',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+    transition: 'all 0.2s ease',
+    userSelect: 'none',
+    outline: 'none', 
   },
-  cardSelecionado: {
-    border: '2px solid #1a73e8',
-    backgroundColor: '#e8f0fe',
+  cardSel: {
+    border: '2px solid #1AB5BB',
+    backgroundColor: '#E0F7F8',
+    boxShadow: '0 4px 16px rgba(26,181,187,0.18)',
+    transform: 'translateY(-3px)',
+  },
+  check: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    width: '22px',
+    height: '22px',
+    borderRadius: '50%',
+    backgroundColor: '#1AB5BB',
+    color: '#fff',
+    fontSize: '12px',
+    fontWeight: '800',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icone: {
-    fontSize: '36px',
+    fontSize: '38px',
     display: 'block',
-    marginBottom: '8px',
+    marginBottom: '10px',
   },
   nomeCategoria: {
-    fontSize: '16px',
-    color: '#333',
+    fontSize: '15px',
+    color: '#2C3060',
     display: 'block',
     marginBottom: '6px',
+    fontWeight: '700',
   },
   descCategoria: {
-    fontSize: '13px',
-    color: '#888',
-    margin: 0,
+    fontSize: '12px',
+    color: '#9CA3AF',
+    lineHeight: '1.4',
   },
   botao: {
     display: 'block',
     width: '100%',
-    padding: '16px',
-    backgroundColor: '#1a73e8',
+    padding: '18px',
+    backgroundColor: '#C41E2C',
     color: '#fff',
     border: 'none',
-    borderRadius: '10px',
-    fontSize: '18px',
+    borderRadius: '12px',
+    fontSize: '17px',
+    fontWeight: '700',
     cursor: 'pointer',
-    fontWeight: 'bold',
+    marginBottom: '20px',
+    boxShadow: '0 4px 16px rgba(196,30,44,0.3)',
+    transition: 'all 0.2s ease',
+    boxSizing: 'border-box'
+  },
+  botaoOff: {
+    backgroundColor: '#D1D5DB',
+    boxShadow: 'none',
+    cursor: 'not-allowed',
+  },
+  aviso: {
+    textAlign: 'center',
+    color: '#9CA3AF',
+    fontSize: '13px',
   }
 }
 

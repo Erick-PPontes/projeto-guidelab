@@ -13,21 +13,32 @@ function Navbar() {
 
   return (
     <nav style={styles.nav}>
-      <Link to="/" style={styles.logo}>
-        GuideLab
+      <Link to="/">
+        <img src="/logo.png" alt="GuideLab" style={styles.logo} />
       </Link>
 
       <div style={styles.links}>
         {token ? (
           <>
-            <span style={styles.bemvindo}>Olá, {nome}!</span>
-            <Link to="/minhas-listas" style={styles.link}>Minhas Listas</Link>
-            <button onClick={sair} style={styles.botaoSair}>Sair</button>
+            <Link to="/minhas-listas" style={styles.linkNav}>
+               Minhas Listas
+            </Link>
+            <div style={styles.usuario}>
+              <div style={styles.avatar}>
+                {nome?.charAt(0).toUpperCase()}
+              </div>
+              <span style={styles.nomeUsuario}>{nome}</span>
+            </div>
+            <button onClick={sair} style={styles.botaoSair}>
+              Sair
+            </button>
           </>
         ) : (
           <>
-            <Link to="/login" style={styles.link}>Entrar</Link>
-            <Link to="/cadastro" style={styles.botaoCadastro}>Criar conta</Link>
+            <Link to="/login" style={styles.linkNav}>Entrar</Link>
+            <Link to="/cadastro" style={styles.botaoCadastro}>
+              Criar conta
+            </Link>
           </>
         )}
       </div>
@@ -40,47 +51,82 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '16px 32px',
-    backgroundColor: '#1a73e8',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+    padding: '0 48px',
+    height: '72px',
+    backgroundColor: '#FFFFFF',
+    boxShadow: '0 1px 8px rgba(0,0,0,0.09)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+    boxSizing: 'border-box', 
   },
   logo: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: '22px',
-    textDecoration: 'none',
+    height: '100px',
+    width: 'auto',
+    display: 'block',
   },
   links: {
     display: 'flex',
     alignItems: 'center',
-    gap: '16px',
+    gap: '12px', 
   },
-  link: {
-    color: '#fff',
-    textDecoration: 'none',
+  linkNav: {
+    color: '#2C3060',
     fontSize: '15px',
+    fontWeight: '600',
+    padding: '8px 14px',
+    borderRadius: '8px',
+    textDecoration: 'none', 
+    fontFamily: "'Inter', sans-serif",
   },
-  bemvindo: {
+  usuario: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    backgroundColor: '#E0F7F8',
+    padding: '6px 14px 6px 6px',
+    borderRadius: '20px',
+  },
+  avatar: {
+    width: '28px',
+    height: '28px',
+    borderRadius: '50%',
+    backgroundColor: '#1AB5BB',
     color: '#fff',
-    fontSize: '15px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: '700',
+    fontSize: '13px',
+    fontFamily: "'Inter', sans-serif",
+  },
+  nomeUsuario: {
+    color: '#2C3060',
+    fontSize: '14px',
+    fontWeight: '600',
+    fontFamily: "'Inter', sans-serif",
   },
   botaoCadastro: {
-    backgroundColor: '#fff',
-    color: '#1a73e8',
-    padding: '8px 16px',
-    borderRadius: '6px',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    fontSize: '15px',
+    backgroundColor: '#C41E2C',
+    color: '#fff',
+    padding: '10px 22px',
+    borderRadius: '8px',
+    fontWeight: '700',
+    fontSize: '14px',
+    textDecoration: 'none', 
+    fontFamily: "'Inter', sans-serif",
+    display: 'inline-block',
   },
   botaoSair: {
     backgroundColor: 'transparent',
-    color: '#fff',
-    border: '1px solid #fff',
+    color: '#C41E2C',
+    border: '1.5px solid #C41E2C',
     padding: '8px 16px',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    fontSize: '15px',
+    borderRadius: '8px',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer', 
+    fontFamily: "'Inter', sans-serif",
   }
 }
 

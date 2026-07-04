@@ -46,16 +46,16 @@ const popular = async () => {
 
   //Recomendações
   await ExameRecomendado.bulkCreate([
-    { exame_id: creatinina.id, sexo: 'ambos', idade_min: 18, idade_max: 120 },
-    { exame_id: ureia.id, sexo: 'ambos', idade_min: 18, idade_max: 120 },
-    { exame_id: colTotal.id, sexo: 'ambos', idade_min: 20, idade_max: 120 },
-    { exame_id: hdl.id, sexo: 'ambos', idade_min: 20, idade_max: 120 },
-    { exame_id: ldl.id, sexo: 'ambos', idade_min: 20, idade_max: 120 },
-    { exame_id: glicose.id, sexo: 'ambos', idade_min: 18, idade_max: 120 },
+    { exame_id: creatinina.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
+    { exame_id: ureia.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
+    { exame_id: colTotal.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
+    { exame_id: hdl.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
+    { exame_id: ldl.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
+    { exame_id: glicose.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
     { exame_id: vitD.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
     { exame_id: vitB12.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
-    { exame_id: tgo.id, sexo: 'ambos', idade_min: 18, idade_max: 120 },
-    { exame_id: hba1c.id, sexo: 'ambos', idade_min: 30, idade_max: 120 },
+    { exame_id: tgo.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
+    { exame_id: hba1c.id, sexo: 'ambos', idade_min: 0, idade_max: 120 },
   ])
 
   console.log('Banco populado com sucesso!')
