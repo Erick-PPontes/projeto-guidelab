@@ -61,5 +61,5 @@ O sistema abrirá automaticamente no seu navegador padrão (geralmente em `http:
 
 ---
 
-## 👨‍💻 Desenvolvedor
+## Desenvolvedor
 Projeto estruturado e desenvolvido por **Erick Pontes**.
